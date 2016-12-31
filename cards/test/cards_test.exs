@@ -1,6 +1,6 @@
 defmodule CardsTest do
   use ExUnit.Case
-  doctest Cards
+  doctest Cards, except: [create_hand: 1, shuffle: 1]
 
   test "deal returns correct number of cards" do
     deck = ["1", "2", "3"]

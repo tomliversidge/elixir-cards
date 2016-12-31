@@ -5,6 +5,15 @@ defmodule Cards do
 
   @doc """
     Returns a list of strings representing a deck of playing cards
+
+  ## Examples
+
+      iex> Cards.create_deck
+      ["Ace of Spades", "Two of Spades", "Three of Spades", "Four of Spades",
+      "Five of Spades", "Ace of Clubs", "Two of Clubs", "Three of Clubs",
+      "Four of Clubs", "Five of Clubs", "Ace of Hearts", "Two of Hearts",
+      "Three of Hearts", "Four of Hearts", "Five of Hearts", "Ace of Diamonds",
+      "Two of Diamonds", "Three of Diamonds", "Four of Diamonds", "Five of Diamonds"]
   """
   def create_deck do
     values = ["Ace", "Two", "Three", "Four", "Five"]
@@ -17,6 +26,12 @@ defmodule Cards do
 
   @doc """
     Shuffles the deck of cards
+
+  ## Examples
+
+      iex> deck = ["Ace of Spades", "Two of Spades", "Three of Spades"]
+      iex> Cards.shuffle(deck)
+      ["Two of Spades", "Ace of Spades", "Three of Spades"]
   """
   def shuffle(deck) do
     Enum.shuffle(deck)
@@ -24,6 +39,14 @@ defmodule Cards do
 
   @doc """
     Determines if the deck contains the card
+
+  ## Examples
+
+      iex> deck = ["Ace of Spades", "Two of Spades", "Three of Spades"]
+      iex> Cards.contains?(deck, "Ace of Spades")
+      true
+      iex> Cards.contains?(deck, "Three of Diamonds")
+      false
   """
   def contains?(deck, card) do
     Enum.member?(deck, card)
@@ -66,6 +89,11 @@ defmodule Cards do
   @doc """
     Helper method for creating, shuffling and dealing a deck of cards.
     `hand_size` determines the number of cards to deal
+
+  ## Examples
+
+      iex> Cards.create_hand(2)
+      ["Ace of Spades", "Two of Hearts"]
   """
   def create_hand(hand_size) do
     create_deck
