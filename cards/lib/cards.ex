@@ -15,6 +15,7 @@ defmodule Cards do
       "Three of Hearts", "Four of Hearts", "Five of Hearts", "Ace of Diamonds",
       "Two of Diamonds", "Three of Diamonds", "Four of Diamonds", "Five of Diamonds"]
   """
+  @spec create_deck() :: list
   def create_deck do
     values = ["Ace", "Two", "Three", "Four", "Five"]
     suits = ["Spades", "Clubs", "Hearts", "Diamonds"]
@@ -33,6 +34,7 @@ defmodule Cards do
       iex> Cards.shuffle(deck)
       ["Two of Spades", "Ace of Spades", "Three of Spades"]
   """
+  @spec shuffle(list) :: list
   def shuffle(deck) do
     Enum.shuffle(deck)
   end
@@ -48,6 +50,7 @@ defmodule Cards do
       iex> Cards.contains?(deck, "Three of Diamonds")
       false
   """
+  @spec contains?(list, String.t) :: boolean()
   def contains?(deck, card) do
     Enum.member?(deck, card)
   end
@@ -64,6 +67,7 @@ defmodule Cards do
       ["Ace of Spades"]
 
   """
+  @spec deal(list, integer) :: {list, list}
   def deal(deck, hand_size) do
     Enum.split(deck, hand_size)
   end
@@ -71,6 +75,7 @@ defmodule Cards do
   @doc """
     Saves the deck to the specified file
   """
+  @spec save(list, String.t) :: atom
   def save(deck, filename) do
     binary = :erlang.term_to_binary(deck)
     File.write(filename, binary)
@@ -79,6 +84,7 @@ defmodule Cards do
   @doc """
     Loads the deck of cards from the specified file
   """
+  @spec load(String.t) :: list | String.t
   def load(filename) do
     case File.read(filename) do
       {:ok, binary} -> :erlang.binary_to_term(binary)
@@ -88,13 +94,21 @@ defmodule Cards do
 
   @doc """
     Helper method for creating, shuffling and dealing a deck of cards.
-    `hand_size` determines the number of cards to deal
+    `hand_size` determines the number of cards to deal.
+    Returns a tuple where the first element is the hand and the
+    second element is the remaining deck 
 
   ## Examples
 
       iex> Cards.create_hand(2)
-      ["Ace of Spades", "Two of Hearts"]
+      {["Ace of Clubs", "Three of Spades"],
+      ["Four of Clubs", "Four of Hearts", "Three of Diamonds", "Two of Diamonds",
+      "Five of Spades", "Three of Clubs", "Two of Clubs", "Five of Hearts",
+      "Four of Spades", "Two of Hearts", "Three of Hearts", "Four of Diamonds",
+      "Two of Spades", "Ace of Spades", "Ace of Diamonds", "Five of Diamonds",
+      "Ace of Hearts", "Five of Clubs"]}
   """
+  @spec create_hand(integer) :: {list, list}
   def create_hand(hand_size) do
     create_deck
     |> shuffle
