@@ -4,6 +4,16 @@ defmodule Cards do
   """
 @type card :: %{description: String.t, suit: String.t, value: String.t}
 @type deck :: list(card)
+@type hand :: list(card)
+@values ["Ace", "Two", "Three", "Four", "Five"]
+@suits ["Spades", "Clubs", "Hearts", "Diamonds"]
+
+defmacro is_valid_card(suit, value) do
+  quote do
+    unquote(suit) in @suits and unquote(value) in @values
+  end
+end
+
   @doc """
     Returns a list of Cards representing a deck of playing cards
 
@@ -33,27 +43,30 @@ defmodule Cards do
 """
   @spec create_deck() :: deck
   def create_deck do
-    values = ["Ace", "Two", "Three", "Four", "Five"]
-    suits = ["Spades", "Clubs", "Hearts", "Diamonds"]
-
-    for suit <- suits, value <- values do
+    for suit <- @suits, value <- @values do
       create_card(suit, value)
     end
   end
 
-defp create_card(suit, value) do
-  %{suit: suit, value: value, description: "#{value} of #{suit}"}
-end
+  @spec create_card(String.t, String.t) :: card
+  def create_card(suit, value) when is_valid_card(suit, value) do
+    %{suit: suit, value: value, description: "#{value} of #{suit}"}
+  end
   @doc """
     Shuffles the deck of cards
 
   ## Examples
 
-      iex> deck = ["Ace of Spades", "Two of Spades", "Three of Spades"]
+      iex> deck = [create_card("Spades", "Ace"),
+      create_card("Spades", "Two"),
+      create_card("Spades", "Three")]
       iex> Cards.shuffle(deck)
-      ["Two of Spades", "Ace of Spades", "Three of Spades"]
+      [%{description: "Ace of Spades", suit: "Spades", value: "Ace"},
+      %{description: "Three of Spades", suit: "Spades", value: "Three"},
+      %{description: "Two of Spades", suit: "Spades", value: "Two"}]
+
   """
-  @spec shuffle(list) :: list
+  @spec shuffle(deck) :: deck
   def shuffle(deck) do
     Enum.shuffle(deck)
   end
@@ -69,7 +82,7 @@ end
       iex> Cards.contains?(deck, %{description: "Three of Diamonds"})
       false
   """
-  @spec contains?(list, String.t) :: boolean()
+  @spec contains?(deck, card) :: boolean()
   def contains?(deck, card) do
        Enum.member?(deck, card)
   end
@@ -81,12 +94,12 @@ end
   ## Examples
 
       iex> deck = Cards.create_deck
-      iex> {hand, deck} = Cards.deal(deck, 1)
+      iex> {hand, _} = Cards.deal(deck, 1)
       iex> hand
       [%{description: "Ace of Spades", suit: "Spades", value: "Ace"}]
 
   """
-  @spec deal(list, integer) :: {list, list}
+  @spec deal(deck, integer) :: {hand, deck}
   def deal(deck, hand_size) do
     Enum.split(deck, hand_size)
   end
@@ -94,7 +107,7 @@ end
   @doc """
     Saves the deck to the specified file
   """
-  @spec save(list, String.t) :: atom
+  @spec save(deck, String.t) :: atom
   def save(deck, filename) do
     binary = :erlang.term_to_binary(deck)
     File.write(filename, binary)
@@ -103,7 +116,7 @@ end
   @doc """
     Loads the deck of cards from the specified file
   """
-  @spec load(String.t) :: list | String.t
+  @spec load(String.t) :: deck | String.t
   def load(filename) do
     case File.read(filename) do
       {:ok, binary} -> :erlang.binary_to_term(binary)
@@ -127,7 +140,7 @@ end
       "Two of Spades", "Ace of Spades", "Ace of Diamonds", "Five of Diamonds",
       "Ace of Hearts", "Five of Clubs"]}
   """
-  @spec create_hand(integer) :: {list, list}
+  @spec create_hand(integer) :: {hand, deck}
   def create_hand(hand_size) do
     create_deck
     |> shuffle
