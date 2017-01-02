@@ -2,29 +2,48 @@ defmodule Cards do
   @moduledoc """
     Provides methods for creating and handling a deck of cards
   """
-
+@type card :: %{description: String.t, suit: String.t, value: String.t}
+@type deck :: list(card)
   @doc """
-    Returns a list of strings representing a deck of playing cards
+    Returns a list of Cards representing a deck of playing cards
 
   ## Examples
 
       iex> Cards.create_deck
-      ["Ace of Spades", "Two of Spades", "Three of Spades", "Four of Spades",
-      "Five of Spades", "Ace of Clubs", "Two of Clubs", "Three of Clubs",
-      "Four of Clubs", "Five of Clubs", "Ace of Hearts", "Two of Hearts",
-      "Three of Hearts", "Four of Hearts", "Five of Hearts", "Ace of Diamonds",
-      "Two of Diamonds", "Three of Diamonds", "Four of Diamonds", "Five of Diamonds"]
-  """
-  @spec create_deck() :: list
+      [%{description: "Ace of Spades", suit: "Spades", value: "Ace"},
+      %{description: "Two of Spades", suit: "Spades", value: "Two"},
+      %{description: "Three of Spades", suit: "Spades", value: "Three"},
+      %{description: "Four of Spades", suit: "Spades", value: "Four"},
+      %{description: "Five of Spades", suit: "Spades", value: "Five"},
+      %{description: "Ace of Clubs", suit: "Clubs", value: "Ace"},
+      %{description: "Two of Clubs", suit: "Clubs", value: "Two"},
+      %{description: "Three of Clubs", suit: "Clubs", value: "Three"},
+      %{description: "Four of Clubs", suit: "Clubs", value: "Four"},
+      %{description: "Five of Clubs", suit: "Clubs", value: "Five"},
+      %{description: "Ace of Hearts", suit: "Hearts", value: "Ace"},
+      %{description: "Two of Hearts", suit: "Hearts", value: "Two"},
+      %{description: "Three of Hearts", suit: "Hearts", value: "Three"},
+      %{description: "Four of Hearts", suit: "Hearts", value: "Four"},
+      %{description: "Five of Hearts", suit: "Hearts", value: "Five"},
+      %{description: "Ace of Diamonds", suit: "Diamonds", value: "Ace"},
+      %{description: "Two of Diamonds", suit: "Diamonds", value: "Two"},
+      %{description: "Three of Diamonds", suit: "Diamonds", value: "Three"},
+      %{description: "Four of Diamonds", suit: "Diamonds", value: "Four"},
+      %{description: "Five of Diamonds", suit: "Diamonds", value: "Five"}]
+"""
+  @spec create_deck() :: deck
   def create_deck do
     values = ["Ace", "Two", "Three", "Four", "Five"]
     suits = ["Spades", "Clubs", "Hearts", "Diamonds"]
 
     for suit <- suits, value <- values do
-      "#{value} of #{suit}"
+      create_card(suit, value)
     end
   end
 
+defp create_card(suit, value) do
+  %{suit: suit, value: value, description: "#{value} of #{suit}"}
+end
   @doc """
     Shuffles the deck of cards
 
@@ -44,10 +63,10 @@ defmodule Cards do
 
   ## Examples
 
-      iex> deck = ["Ace of Spades", "Two of Spades", "Three of Spades"]
-      iex> Cards.contains?(deck, "Ace of Spades")
+      iex> deck = Cards.create_deck
+      iex> Cards.contains?(deck, %{description: "Ace of Spades", suit: "Spades", value: "Ace"})
       true
-      iex> Cards.contains?(deck, "Three of Diamonds")
+      iex> Cards.contains?(deck, %{description: "Three of Diamonds"})
       false
   """
   @spec contains?(list, String.t) :: boolean()
@@ -64,7 +83,7 @@ defmodule Cards do
       iex> deck = Cards.create_deck
       iex> {hand, deck} = Cards.deal(deck, 1)
       iex> hand
-      ["Ace of Spades"]
+      [%{description: "Ace of Spades", suit: "Spades", value: "Ace"}]
 
   """
   @spec deal(list, integer) :: {list, list}
@@ -96,7 +115,7 @@ defmodule Cards do
     Helper method for creating, shuffling and dealing a deck of cards.
     `hand_size` determines the number of cards to deal.
     Returns a tuple where the first element is the hand and the
-    second element is the remaining deck 
+    second element is the remaining deck
 
   ## Examples
 
