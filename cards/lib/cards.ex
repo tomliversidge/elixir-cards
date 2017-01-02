@@ -71,7 +71,7 @@ end
   """
   @spec contains?(list, String.t) :: boolean()
   def contains?(deck, card) do
-    Enum.member?(deck, card)
+       Enum.member?(deck, card)
   end
 
   @doc """

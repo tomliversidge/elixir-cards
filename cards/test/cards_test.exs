@@ -12,12 +12,19 @@ defmodule CardsTest do
   describe "Cards.contains?" do
 
     test "returns true when card in deck" do
-        deck = ["1", "2", "3"]
-        assert Cards.contains?(deck, "1")
+        deck = [
+          %{description: "Ace of Spades", suit: "Spades", value: "Ace"},
+          %{description: "Two of Spades", suit: "Spades", value: "Two"},
+          %{description: "Three of Spades", suit: "Spades", value: "Three"}]
+        assert Cards.contains?(deck, %{description: "Ace of Spades", suit: "Spades", value: "Ace"})
       end
 
       test "returns false when card not in deck" do
-          deck = ["1", "2", "3"]
+        deck = [
+          %{description: "Ace of Spades", suit: "Spades", value: "Ace"},
+          %{description: "Two of Spades", suit: "Spades", value: "Two"},
+          %{description: "Three of Spades", suit: "Spades", value: "Three"}]
+
           refute Cards.contains?(deck, "123123")
       end
   end
