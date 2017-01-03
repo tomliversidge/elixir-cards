@@ -14,6 +14,10 @@ defmacro is_valid_card(suit, value) do
   end
 end
 
+defp is_valid_card(card) do
+  card[:suit] in @suits && card[:value] in @values
+end
+
   @doc """
     Returns a list of Cards representing a deck of playing cards
 
@@ -84,7 +88,11 @@ end
   """
   @spec contains?(deck, card) :: boolean()
   def contains?(deck, card) do
+    if is_valid_card(card) do
        Enum.member?(deck, card)
+     else
+       false
+     end
   end
 
   @doc """
