@@ -31,7 +31,7 @@ defmodule CardsTest do
           Cards.create_card("Spades", "Three")
         ]
 
-        assert Cards.contains?(deck, %{description: "Ace of Spades", suit: "Spades", value: "Ace"})
+        assert Cards.contains?(deck, %{suit: "Spades", value: "Ace"})
       end
 
       test "returns false when card not in deck" do

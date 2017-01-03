@@ -2,7 +2,7 @@ defmodule Cards do
   @moduledoc """
     Provides methods for creating and handling a deck of cards
   """
-@type card :: %{description: String.t, suit: String.t, value: String.t}
+@type card :: %{suit: String.t, value: String.t}
 @type deck :: list(card)
 @type hand :: list(card)
 @values ["Ace", "Two", "Three", "Four", "Five"]
@@ -24,26 +24,16 @@ end
   ## Examples
 
       iex> Cards.create_deck
-      [%{description: "Ace of Spades", suit: "Spades", value: "Ace"},
-      %{description: "Two of Spades", suit: "Spades", value: "Two"},
-      %{description: "Three of Spades", suit: "Spades", value: "Three"},
-      %{description: "Four of Spades", suit: "Spades", value: "Four"},
-      %{description: "Five of Spades", suit: "Spades", value: "Five"},
-      %{description: "Ace of Clubs", suit: "Clubs", value: "Ace"},
-      %{description: "Two of Clubs", suit: "Clubs", value: "Two"},
-      %{description: "Three of Clubs", suit: "Clubs", value: "Three"},
-      %{description: "Four of Clubs", suit: "Clubs", value: "Four"},
-      %{description: "Five of Clubs", suit: "Clubs", value: "Five"},
-      %{description: "Ace of Hearts", suit: "Hearts", value: "Ace"},
-      %{description: "Two of Hearts", suit: "Hearts", value: "Two"},
-      %{description: "Three of Hearts", suit: "Hearts", value: "Three"},
-      %{description: "Four of Hearts", suit: "Hearts", value: "Four"},
-      %{description: "Five of Hearts", suit: "Hearts", value: "Five"},
-      %{description: "Ace of Diamonds", suit: "Diamonds", value: "Ace"},
-      %{description: "Two of Diamonds", suit: "Diamonds", value: "Two"},
-      %{description: "Three of Diamonds", suit: "Diamonds", value: "Three"},
-      %{description: "Four of Diamonds", suit: "Diamonds", value: "Four"},
-      %{description: "Five of Diamonds", suit: "Diamonds", value: "Five"}]
+      [%{suit: "Spades", value: "Ace"}, %{suit: "Spades", value: "Two"},
+      %{suit: "Spades", value: "Three"}, %{suit: "Spades", value: "Four"},
+      %{suit: "Spades", value: "Five"}, %{suit: "Clubs", value: "Ace"},
+      %{suit: "Clubs", value: "Two"}, %{suit: "Clubs", value: "Three"},
+      %{suit: "Clubs", value: "Four"}, %{suit: "Clubs", value: "Five"},
+      %{suit: "Hearts", value: "Ace"}, %{suit: "Hearts", value: "Two"},
+      %{suit: "Hearts", value: "Three"}, %{suit: "Hearts", value: "Four"},
+      %{suit: "Hearts", value: "Five"}, %{suit: "Diamonds", value: "Ace"},
+      %{suit: "Diamonds", value: "Two"}, %{suit: "Diamonds", value: "Three"},
+      %{suit: "Diamonds", value: "Four"}, %{suit: "Diamonds", value: "Five"}]
 """
   @spec create_deck() :: deck
   def create_deck do
@@ -54,8 +44,23 @@ end
 
   @spec create_card(String.t, String.t) :: card
   def create_card(suit, value) when is_valid_card(suit, value) do
-    %{suit: suit, value: value, description: "#{value} of #{suit}"}
+    %{suit: suit, value: value}
   end
+
+  @doc """
+  Gets a description of a card
+
+  ## Examples
+
+      iex> card = Cards.create_card("Spades", "Ace")
+      iex> Cards.card_description(card)
+      "Ace of Spades"
+  """
+  @spec card_description(card) :: String.t
+  def card_description(card) do
+    "#{card.value} of #{card.suit}"
+  end
+
   @doc """
     Shuffles the deck of cards
 
@@ -65,9 +70,9 @@ end
       create_card("Spades", "Two"),
       create_card("Spades", "Three")]
       iex> Cards.shuffle(deck)
-      [%{description: "Ace of Spades", suit: "Spades", value: "Ace"},
-      %{description: "Three of Spades", suit: "Spades", value: "Three"},
-      %{description: "Two of Spades", suit: "Spades", value: "Two"}]
+      [%{suit: "Spades", value: "Ace"},
+      %{suit: "Spades", value: "Three"},
+      %{suit: "Spades", value: "Two"}]
 
   """
   @spec shuffle(deck) :: deck
@@ -81,9 +86,9 @@ end
   ## Examples
 
       iex> deck = Cards.create_deck
-      iex> Cards.contains?(deck, %{description: "Ace of Spades", suit: "Spades", value: "Ace"})
+      iex> Cards.contains?(deck, %{suit: "Spades", value: "Ace"})
       true
-      iex> Cards.contains?(deck, %{description: "Three of Diamonds"})
+      iex> Cards.contains?(deck, %{suit: "Spades", value: "Ten"})
       false
   """
   @spec contains?(deck, card) :: boolean()
@@ -104,7 +109,7 @@ end
       iex> deck = Cards.create_deck
       iex> {hand, _} = Cards.deal(deck, 1)
       iex> hand
-      [%{description: "Ace of Spades", suit: "Spades", value: "Ace"}]
+      [%{suit: "Spades", value: "Ace"}]
 
   """
   @spec deal(deck, integer) :: {hand, deck}
@@ -141,12 +146,16 @@ end
   ## Examples
 
       iex> Cards.create_hand(2)
-      {["Ace of Clubs", "Three of Spades"],
-      ["Four of Clubs", "Four of Hearts", "Three of Diamonds", "Two of Diamonds",
-      "Five of Spades", "Three of Clubs", "Two of Clubs", "Five of Hearts",
-      "Four of Spades", "Two of Hearts", "Three of Hearts", "Four of Diamonds",
-      "Two of Spades", "Ace of Spades", "Ace of Diamonds", "Five of Diamonds",
-      "Ace of Hearts", "Five of Clubs"]}
+      {[%{suit: "Diamonds", value: "Four"}, %{suit: "Diamonds", value: "Two"}],
+      [%{suit: "Spades", value: "Ace"}, %{suit: "Hearts", value: "Five"},
+      %{suit: "Spades", value: "Five"}, %{suit: "Clubs", value: "Four"},
+      %{suit: "Clubs", value: "Two"}, %{suit: "Hearts", value: "Ace"},
+      %{suit: "Spades", value: "Three"}, %{suit: "Diamonds", value: "Ace"},
+      %{suit: "Hearts", value: "Four"}, %{suit: "Clubs", value: "Five"},
+      %{suit: "Diamonds", value: "Three"}, %{suit: "Clubs", value: "Ace"},
+      %{suit: "Spades", value: "Two"}, %{suit: "Clubs", value: "Three"},
+      %{suit: "Hearts", value: "Three"}, %{suit: "Diamonds", value: "Five"},
+      %{suit: "Hearts", value: "Two"}, %{suit: "Spades", value: "Four"}]}
   """
   @spec create_hand(integer) :: {hand, deck}
   def create_hand(hand_size) do
