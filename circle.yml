@@ -25,4 +25,4 @@ test:
   override:
     - mix test
     - mkdir -p $CIRCLE_TEST_REPORTS/exunit
-    - cp _build/test/lib/Cards/results.xml $CIRCLE_TEST_REPORTS/exunit
+    - cp _build/test/lib/cards/results.xml $CIRCLE_TEST_REPORTS/exunit
